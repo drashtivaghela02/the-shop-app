@@ -7,24 +7,27 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useCallback } from 'react';
 
 import productReducer from './store/reducers/products';
-import ProductsNavigator from './navigation/ShopNavigator';
+import ShopNavigator from './navigation/ShopNavigator';
 import cartReducer from './store/reducers/cart';
+import orderReducer from './store/reducers/order';
+import ProductsNavigator from './navigation/ShopNavigator';
 
 // SplashScreen.preventAutoHideAsync();
 
 const rootReducer = combineReducers({
   products : productReducer,
-  cart : cartReducer
+  cart : cartReducer,
+  orders : orderReducer
 });
 
 const store = createStore(rootReducer);
 
 export default function App() {
   
-  const [fontsLoaded, fontError] = useFonts({
-    'OpenSans-Bold': require('./assets/fonts/OpenSans-Bold.ttf'),
-    'OpenSans-Regular': require('./assets/fonts/OpenSans-Regular.ttf')
-  });
+  // const [fontsLoaded, fontError] = useFonts({
+  //   'OpenSans-Bold': require('./assets/fonts/OpenSans-Bold.ttf'),
+  //   'OpenSans-Regular': require('./assets/fonts/OpenSans-Regular.ttf')
+  // });
 
   // const onLayoutRootView = useCallback(async () => {
   //   if (fontsLoaded || fontError) {
