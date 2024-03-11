@@ -1,13 +1,16 @@
 import { Ionicons } from "@expo/vector-icons";
 import React, { useLayoutEffect } from "react";
+import { useSelector } from "react-redux";
 import { StyleSheet, View , FlatList, Text} from "react-native";
 import { HeaderButtons } from "react-navigation-header-buttons";
+
 import HeaderButton from "../../components/UI/HeaderButton";
-import { useSelector } from "react-redux";
+import OrderItem from "../../components/shop/OrderItem";
+
 
 const OrderScreen = props => {
-    const orders = useSelector(state => state.orders.orders);
-    
+    const orderscr = useSelector(state => state.order.orders);  // order (from App.js)  orders(from reducer)
+    console.log(orderscr)
     useLayoutEffect(() => {
         props.navigation.setOptions({
             headerTitle : 'Your Orders',
@@ -23,9 +26,15 @@ const OrderScreen = props => {
 
     return (
         <FlatList 
-            data={orders}
+            data={orderscr}
             keyExtractor={item => item.id}
-            renderItem={itemData => <Text>{itemData.item.totalAmount}</Text>}
+            renderItem={itemData => 
+                <OrderItem 
+                    amount={itemData.item.TotalAmount} 
+                    date={itemData.item.readableDate} 
+                    item={itemData.item.items}
+                />
+            }
         />
      );
 };

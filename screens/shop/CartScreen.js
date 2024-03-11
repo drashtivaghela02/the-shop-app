@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { Button, StyleSheet, View, Text, FlatList } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -8,7 +8,7 @@ import * as cartActions from '../../store/actions/cart'
 import * as orderActions from '../../store/actions/order';
 
 const CartScreen = props => {
-    const cartTotalAmount = useSelector(state =>  state.cart.totalAmount);
+    const cartTotalAmount = useSelector(state => state.cart.totalAmount);
     const cartItems = useSelector(state => {
         const transformedCartItems = [];
         for (const key in state.cart.items) {
@@ -20,8 +20,14 @@ const CartScreen = props => {
                 sum : state.cart.items[key].sum 
             });
         }
-        return transformedCartItems.sort((a,b) => a.productId > b.productId ? 1 : -1);
+        return transformedCartItems; //.sort((a,b) => a.productId > b.productId ? 1 : -1);
     });
+
+    useLayoutEffect(() => {
+        props.navigation.setOptions({
+            headerTitle : "Your Cart"
+        });
+    },[props.navigation]);
 
     const dispatch = useDispatch();
     
@@ -31,7 +37,7 @@ const CartScreen = props => {
                 <Text style = {styles.summaryText} >
                     Total: <Text style = {styles.amount} >${cartTotalAmount.toFixed(2)}</Text> 
                 </Text>
-                <Button color={Colors.accent} title="Order Now" onPress={dispatch(orderActions.addOrder(cartItems, cartTotalAmount))} disabled={cartItems.length === 0} />
+                <Button color={Colors.primary} title="Order Now" onPress={()=>{dispatch(orderActions.addOrder(cartItems, cartTotalAmount))}} disabled={cartItems.length === 0} />
             </View>
             <FlatList
                 data={cartItems}
@@ -41,6 +47,7 @@ const CartScreen = props => {
                     quantity={itemData.item.quantity}
                     title={itemData.item.productTitle}
                     amount={itemData.item.sum}
+                    deletable
                     onRemove={() => {dispatch(cartActions.removeFromCart(itemData.item.productId))}}
                 />
                 )}
