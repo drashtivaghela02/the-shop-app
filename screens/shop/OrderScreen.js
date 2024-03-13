@@ -17,7 +17,7 @@ const OrderScreen = props => {
             headerLeft : () => {
                 return (
                     <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                        <Ionicons name="menu" size={24} color='black' style = {{marginLeft: 15}} onPress={()=> props.navigation.toggleDrawer()} />
+                        <Ionicons name="menu" size={24} color='white' style = {{marginLeft: 15}} onPress={()=> props.navigation.toggleDrawer()} />
                     </HeaderButtons>
                 );
             },

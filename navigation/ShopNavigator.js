@@ -7,9 +7,10 @@ import ProductDetailScreen from '../screens/shop/ProductDetailScreen';
 import CartScreen from '../screens/shop/CartScreen';
 import OrderScreen from '../screens/shop/OrderScreen';
 import UserProductScreen from '../screens/user/UserProductsScreen';;
+import EditProductScreen from '../screens/user/EditProductScreen';
 import Colors from '../constants/Colors';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -32,7 +33,13 @@ const ProductsNavigator = () => {
 
 const OrdersNavigator = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions = {{
+              headerStyle : {backgroundColor: Platform.OS === 'android' ? Colors.primary : 'white'},
+              headerTintColor: Platform.OS === 'android'  ? 'white' : Colors.primaryColor,
+              headerTitleStyle: { fontWeight: 'bold' }
+          }}
+    >
       <Stack.Screen name='Orders' component={OrderScreen} />
     </Stack.Navigator>
   );
@@ -40,8 +47,15 @@ const OrdersNavigator = () => {
 
 const AdminNavigator = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions = {{
+              headerStyle : {backgroundColor: Platform.OS === 'android' ? Colors.primary : 'white'},
+              headerTintColor: Platform.OS === 'android'  ? 'white' : Colors.primaryColor,
+              headerTitleStyle: { fontWeight: 'bold' }
+          }}
+    >
       <Stack.Screen name='UserProducts' component={UserProductScreen} />
+      <Stack.Screen name='EditProducts' component={EditProductScreen} />
     </Stack.Navigator>
   );
 };
@@ -52,9 +66,7 @@ const ShopsNavigator = () => {
       <Drawer.Navigator
         screenOptions={{
           drawerActiveTintColor : Colors.primary,
-          drawerLabelStyle : {
-              fontWeight: 'bold'
-          }
+          drawerLabelStyle : {fontWeight: 'bold'}
         }}
       >
         <Drawer.Screen 
@@ -62,17 +74,44 @@ const ShopsNavigator = () => {
           component = {ProductsNavigator} 
           options={{
             headerShown : false,
-            drawerIcon : drawerConfig => (
+            drawerIcon : (focused,color) => (
               <AntDesign  
                 name="shoppingcart" 
-                size={23} 
-                color= {drawerConfig.drawerActiveTintColor}
+                size={23}
+                color={focused.focused ? Colors.primary : color}
               />
             )
           }}
         />
-        <Drawer.Screen name = "Order" component = {OrdersNavigator} options={{headerShown : false}}/>
-        <Drawer.Screen name = "Admin" component = {AdminNavigator} options={{headerShown : false}}/>
+
+        <Drawer.Screen 
+          name = "Order" 
+          component = {OrdersNavigator}
+          options={{
+            headerShown : false,
+            drawerIcon : (focused, color) => (
+              <Ionicons  
+                name="list-sharp" 
+                size={23}
+                color={focused.focused ? Colors.primary : color}
+              />
+              )
+          }}
+        />
+        
+        <Drawer.Screen 
+          name = "Admin" 
+          component = {AdminNavigator} 
+          options={{
+            headerShown : false,
+            drawerIcon : (focused,color) => (
+              <Ionicons
+                name="create-sharp" 
+                size={23}
+                color={focused.focused ? Colors.primary : color}
+              />)
+          }} 
+        />
 
       </Drawer.Navigator>
     </NavigationContainer>

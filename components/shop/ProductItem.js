@@ -9,12 +9,12 @@ const ProductItem = props => {
     }
 
     return (
-    <TouchableCmp onPress={props.onViewDetail} useForeground>
+    <TouchableCmp onPress={props.onSelect} useForeground>
         <View style = {styles.product}>
             <Image source={{uri : props.image}} style ={styles.image} /> 
             <View style= {styles.detail}>
                 <Text style={styles.title}>{props.title}</Text>
-                <Text style={styles.price}>${props.price.toFixed(2)}</Text>
+                <Text style={styles.price}>${props.price}</Text>
             </View>
             <View style ={styles.action}>
                 {props.children}
