@@ -72,7 +72,7 @@ const UserProductScreen = props => {
                     color={Colors.primary} 
                     title="Edit" 
                     onPress={() => {
-                        editProductHandler(itemData.item.id);
+                        editProductHandler(itemData.item.id),console.log(itemData.item.id)
                     }} 
                 />
                 <Button
