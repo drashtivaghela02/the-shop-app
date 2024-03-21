@@ -1,16 +1,37 @@
 import { Ionicons } from "@expo/vector-icons";
-import React, { useLayoutEffect } from "react";
-import { useSelector } from "react-redux";
-import { StyleSheet, View , FlatList, Text} from "react-native";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { StyleSheet, View , FlatList, Text, Button, ActivityIndicator} from "react-native";
 import { HeaderButtons } from "react-navigation-header-buttons";
 
 import HeaderButton from "../../components/UI/HeaderButton";
 import OrderItem from "../../components/shop/OrderItem";
+import * as OrdersAction from "../../store/actions/order";
+import Colors from "../../constants/Colors";
 
 
 const OrderScreen = props => {
+    const [isLoading, setIsLoading] = useState(false);
     const orderscr = useSelector(state => state.order.orders);  // order (from App.js)  orders(from reducer)
-    console.log(orderscr)
+    console.log("Orders: ",orderscr)
+    const dispatch = useDispatch();
+    
+    // useEffect(() => {
+    //     setIsLoading(true);
+    //     dispatch(OrdersAction.fetchOrders()).then(() => {
+    //         setIsLoading(false);
+    //     });
+    // },[dispatch]);
+
+
+//     if(isLoading){
+//         return (
+//             <View style = {styles.centered}>
+//                 <ActivityIndicator size="large" color={Colors.primary} />
+//             </View>
+//         );
+//     }
+// if(!isLoading){
     useLayoutEffect(() => {
         props.navigation.setOptions({
             headerTitle : 'Your Orders',
@@ -23,7 +44,24 @@ const OrderScreen = props => {
             },
         });
     },[props.navigation]);
+// }
 
+
+    useEffect(() => {
+        setIsLoading(true);
+        dispatch(OrdersAction.fetchOrders()).then(() => {
+            setIsLoading(false);
+        });
+    },[dispatch]);
+
+
+    if(isLoading){
+        return (
+            <View style = {styles.centered}>
+                <ActivityIndicator size="large" color={Colors.primary} />
+            </View>
+        );
+    }
     return (
         <FlatList 
             data={orderscr}
@@ -39,6 +77,12 @@ const OrderScreen = props => {
      );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+    centered : {
+        flex : 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
+});
 
 export default OrderScreen;

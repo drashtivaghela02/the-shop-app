@@ -10,7 +10,7 @@ const CartItem = props => {
                 <Text style = {styles.mainText} >{props.title} </Text>
             </View>
             <View style={styles.itemData}>
-                <Text style = {styles.amount}>{props.amount.toFixed(2)}</Text>
+                <Text style = {styles.amount}>${props.amount.toFixed(2)}</Text>
                 { props.deletable && (
                     <TouchableOpacity onPress={props.onRemove} style = {styles.deleteButton}>
                         <Ionicons name="trash" size={23} color="red" />
@@ -36,11 +36,13 @@ const styles = StyleSheet.create({
     quantity: {
         // fontFamily: 'OpenSans-Regular',
         color: '#888',
-        fontSize:16
+        fontSize:16,
+        marginRight:5
     },
     mainText: {
         // fontFamily: 'OpenSans-Bold',
-        fontSize:16
+        fontSize:16,
+        width: 180
     },
     amount: {
         // fontFamily: 'OpenSans-Bold',

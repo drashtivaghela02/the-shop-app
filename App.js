@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import { combineReducers, createStore } from 'redux';
+import { applyMiddleware, combineReducers, createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
@@ -11,6 +11,7 @@ import ShopNavigator from './navigation/ShopNavigator';
 import cartReducer from './store/reducers/cart';
 import orderReducer from './store/reducers/order';
 import ProductsNavigator from './navigation/ShopNavigator';
+import { thunk } from 'redux-thunk';
 
 // SplashScreen.preventAutoHideAsync();
 
@@ -20,7 +21,7 @@ const rootReducer = combineReducers({
   order : orderReducer
 });
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 export default function App() {
   

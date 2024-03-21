@@ -1,12 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useCallback, useLayoutEffect, useReducer } from 'react';
-import { Text, View, StyleSheet, ScrollView, TextInput, Alert } from 'react-native';
+import React, { useCallback, useEffect, useLayoutEffect, useReducer, useState } from 'react';
+import { Text, View, StyleSheet, ScrollView, TextInput, Alert, ActivityIndicator, Button } from 'react-native';
 import { HeaderButtons } from 'react-navigation-header-buttons';
 
 import HeaderButton from "../../components/UI/HeaderButton"
 import * as productsActions from '../../store/actions/products'
 import Input from '../../components/UI/Input'; 
 import { useDispatch, useSelector } from 'react-redux';
+import Colors from '../../constants/Colors';
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 
@@ -40,6 +41,9 @@ const formReducer = (state, action) => {
 };
 
 const EditProductScreen = props => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
+
     // console.log("props",props.route.params)
     const prodId = props.route.params ? props.route.params.productId : null;
     const editedProduct = useSelector(state => state.products.userProducts.find(prod => prod.id === prodId));
@@ -61,36 +65,53 @@ const EditProductScreen = props => {
         },
         formIsValid: editedProduct ? true : false
       });
+    
+    useEffect(() => {
+        if(error){
+            Alert.alert('An error occured!', error,[{ text : 'Okay'}])
+        }
+    },[error])
 
-    const submitHandler = useCallback(() => {
+    const submitHandler = useCallback(async() => {
         // if (textIsValid) {
         if(!formState.formIsValid){
-            Alert.alert('Wrong input!', 'Please check the errors in the form.', [
-              { text: 'Okay' }
-            ]);
-        }      
-        if(editedProduct){//while edit product
-            dispatch(productsActions.updateProduct(
-                prodId, 
-                formState.inputValues.title, 
-                formState.inputValues.description,
-                formState.inputValues.imageUrl));
-            }
-
-         else{ // while add product
-            dispatch(productsActions.createProduct(
-                formState.inputValues.title,
-                formState.inputValues.description,
-                formState.inputValues.imageUrl,
-                +formState.inputValues.price));
-                console.log("Errormeassge3",formState.inputValues );
+            setError('Please check the errors in the form.');
+            // Alert.alert('Wrong input!', 'Please check the errors in the form.', [
+            //     { text: 'Okay' }
+            // ]);
+            return;
         }
+        setError(null)
+        setIsLoading(true);
+        try {
+            if(editedProduct){      //while editing product
+                await dispatch(productsActions.updateProduct(
+                    prodId, 
+                    formState.inputValues.title, 
+                    formState.inputValues.description,
+                    formState.inputValues.imageUrl));
+                }
+    
+            else{ // while add product
+                await dispatch(productsActions.createProduct(
+                    formState.inputValues.title,
+                    formState.inputValues.description,
+                    formState.inputValues.imageUrl,
+                    +formState.inputValues.price));
+                    // console.log("Errormeassge3",formState.inputValues );
+            }
+        } catch (err) {
+            setError(err.message)
+        }
+        setIsLoading(false);
+        
         if(formState.formIsValid){
-        props.navigation.goBack();} 
-    },[dispatch,prodId,formState]);
+            props.navigation.goBack();
+        } 
+    },[dispatch,prodId,formState,editedProduct,props.navigation]);
 
     const inputChangeHandler = useCallback((inputIdentifiers, inputValues, inputValidity) => {
-        console.log("testing",inputValues)
+        // console.log("testing",inputValues)
         dispatchFormState({
             type: FORM_INPUT_UPDATE,
             value : inputValues,
@@ -98,6 +119,7 @@ const EditProductScreen = props => {
             input : inputIdentifiers
         })
     },[dispatchFormState]);
+
     useLayoutEffect(() => {
         props.navigation.setOptions({
             // headerTitle : props.route.params.productId ? 'Edit Product': 'Add Product',
@@ -117,6 +139,13 @@ const EditProductScreen = props => {
         });
     }, [props.navigation, submitHandler]);
     
+    if(isLoading){
+        return (
+            <View style = {styles.centered}>
+                <ActivityIndicator size="large" color={Colors.primary} />
+            </View>
+        );
+    }
     
     return (
         <ScrollView>
@@ -181,6 +210,16 @@ const styles = StyleSheet.create({
     form: {
         margin : 20
     },
+    centered : {
+        flex : 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
     
 });
 

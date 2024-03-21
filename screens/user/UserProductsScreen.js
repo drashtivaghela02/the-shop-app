@@ -11,6 +11,7 @@ import * as ProductActions from '../../store/actions/products';
 
 const UserProductScreen = props => {
     const userProduct = useSelector(state => state.products.userProducts);
+    console.log((userProduct))
     const dispatch = useDispatch();
 
     const editProductHandler = (id) => {

@@ -12,7 +12,7 @@ const OrderItem = props => {
     return (
         <View style={styles.orderItem}>
             <View style={styles.summary}>
-                <Text style = {styles.tamount}>{props.amount.toFixed(2)}</Text>
+                <Text style = {styles.tamount}>${props.amount.toFixed(2)}</Text>
                 <Text style = {styles.date}>{props.date}</Text>
             </View>
             <Button 
@@ -53,7 +53,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent : 'space-between',
         alignItems: 'center',
-        width : '100%'
+        width : '100%',
+        marginBottom: 10
     },
     date: {
         // fontFamily: 'OpenSans-Regular',
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
         fontSize:16
     },
     tamount: {
-
+        fontWeight: 'bold'
     }
 });
 

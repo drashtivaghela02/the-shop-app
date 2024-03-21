@@ -1,5 +1,5 @@
-import React, { useLayoutEffect } from "react";
-import { Button, StyleSheet, View, Text, FlatList } from "react-native";
+import React, { useLayoutEffect, useState } from "react";
+import { Button, StyleSheet, View, Text, FlatList, ActivityIndicator } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 import Colors from "../../constants/Colors";
@@ -8,6 +8,7 @@ import * as cartActions from '../../store/actions/cart'
 import * as orderActions from '../../store/actions/order';
 
 const CartScreen = props => {
+    const [isLoading, setIsLoading] = useState(false);
     const cartTotalAmount = useSelector(state => state.cart.totalAmount);
     const cartItems = useSelector(state => {
         const transformedCartItems = [];
@@ -30,14 +31,31 @@ const CartScreen = props => {
     },[props.navigation]);
 
     const dispatch = useDispatch();
+
+    const sendOrderHandle = async () => {
+        setIsLoading(true);
+        await dispatch(orderActions.addOrder(cartItems, cartTotalAmount))
+        setIsLoading(false);
+    }
     
     return (
         <View style = {styles.screen}>
             <View style = {styles.summary} >
                 <Text style = {styles.summaryText} >
-                    Total: <Text style = {styles.amount} >${cartTotalAmount.toFixed(2)}</Text> 
+                    Total: <Text style = {styles.amount} >
+                        ${cartTotalAmount.toFixed(2)}
+                    </Text> 
                 </Text>
-                <Button color={Colors.primary} title="Order Now" onPress={()=>{dispatch(orderActions.addOrder(cartItems, cartTotalAmount))}} disabled={cartItems.length === 0} />
+                {isLoading ? 
+                (<ActivityIndicator size="small" color={Colors.primary} />) 
+                : 
+                (<Button 
+                    color={Colors.primary} 
+                    title="Order Now" 
+                    onPress={sendOrderHandle}
+                    // onPress={()=>{dispatch(orderActions.addOrder(cartItems, cartTotalAmount))}} 
+                    disabled={cartItems.length === 0} />
+                )}
             </View>
             <FlatList
                 data={cartItems}

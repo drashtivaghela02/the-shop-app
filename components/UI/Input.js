@@ -29,7 +29,7 @@ const Input = props => {
         isValid : props.initiallyValid,
         touched : false
     });
-    console.log("Props",props);
+    // console.log("Props",props);
 
     const { onInputChange, id } = props;
                                    
@@ -77,7 +77,7 @@ const Input = props => {
                 onChangeText={textChangeHandler}
                 onBlur = {lastFocusHandler}
             />
-            {!inputState.isValid && inputState.value &&(
+            {!inputState.isValid && !inputState.value &&(
                 <View style={styles.errorContainer}>
                     <Text style={styles.errorText} >{props.errorText}</Text>
                 </View>
