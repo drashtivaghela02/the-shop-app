@@ -1,5 +1,5 @@
 import React, { useLayoutEffect } from 'react';
-import { Alert, Button, FlatList } from 'react-native';
+import { Alert, Button, FlatList, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { HeaderButtons } from 'react-navigation-header-buttons';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,7 +11,7 @@ import * as ProductActions from '../../store/actions/products';
 
 const UserProductScreen = props => {
     const userProduct = useSelector(state => state.products.userProducts);
-    console.log((userProduct))
+    console.log("user Products :",userProduct);
     const dispatch = useDispatch();
 
     const editProductHandler = (id) => {
@@ -55,6 +55,13 @@ const UserProductScreen = props => {
         });
     },[props.navigation]);
     
+    if(userProduct.length === 0){
+        return (
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <Text>No Products found, maybe start creating some?</Text>
+            </View>
+        );
+    }
 
     return (
     <FlatList 
@@ -73,7 +80,7 @@ const UserProductScreen = props => {
                     color={Colors.primary} 
                     title="Edit" 
                     onPress={() => {
-                        editProductHandler(itemData.item.id),console.log(itemData.item.id)
+                        editProductHandler(itemData.item.id)  //,console.log(itemData.item.id)
                     }} 
                 />
                 <Button

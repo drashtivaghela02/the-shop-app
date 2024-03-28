@@ -2,7 +2,7 @@ import React, { useEffect, useReducer } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
 
 const INPUT_CHANGE = 'INPUT_CHANGE';
-const INPUT_BLUR = 'INPUT_BLUR'
+const INPUT_BLUR = 'INPUT_BLUR';
 
 const inputReducer = (state,action) => {
     switch(action.type) {
@@ -41,14 +41,14 @@ const Input = props => {
 
     const textChangeHandler = text => {
         
-        // const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const emailRegex =  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         let isValid = true;
         if (props.required && text.trim().length === 0) {
             isValid = false;
         }
-        // if (props.email && !emailRegex.test(text.toLowerCase())) {
-        //     isValid = false;
-        // }
+        if (props.email && !emailRegex.test(text.toLowerCase())) {
+            isValid = false;
+        }
         if (props.min != null && +text < props.min) {
             isValid = false;
         }
@@ -58,7 +58,7 @@ const Input = props => {
         if (props.minLength != null && text.length < props.minLength) {
             isValid = false;
         }
-        // console.log(isValid);
+        // console.log("valid",isValid);
         dispatch({ type : INPUT_CHANGE, value : text, isValid: isValid})
         onInputChange(text, isValid); // Notify the parent component about the change
     }; 

@@ -10,7 +10,8 @@ import productReducer from './store/reducers/products';
 import ShopNavigator from './navigation/ShopNavigator';
 import cartReducer from './store/reducers/cart';
 import orderReducer from './store/reducers/order';
-import ProductsNavigator from './navigation/ShopNavigator';
+import authReducer from './store/reducers/auth';
+import NavigationContainer from './navigation/NavigationContainer';
 import { thunk } from 'redux-thunk';
 
 // SplashScreen.preventAutoHideAsync();
@@ -18,7 +19,8 @@ import { thunk } from 'redux-thunk';
 const rootReducer = combineReducers({
   products : productReducer,
   cart : cartReducer,
-  order : orderReducer
+  order : orderReducer,
+  auth : authReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
@@ -45,7 +47,7 @@ export default function App() {
     //   <Text>Hello</Text>
     // </View>
     <Provider store={store}>
-      <ProductsNavigator />
+      <ShopNavigator />
     </Provider>
   );
 }

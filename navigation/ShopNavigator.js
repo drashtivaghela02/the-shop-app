@@ -1,6 +1,8 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Platform } from 'react-native';
+import { DrawerItemList, createDrawerNavigator } from '@react-navigation/drawer';
+import { Button, Platform, SafeAreaView, View } from 'react-native';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 
 import ProductsOverViewScreen from '../screens/shop/ProductsOverViewScreen';
 import ProductDetailScreen from '../screens/shop/ProductDetailScreen';
@@ -8,68 +10,98 @@ import CartScreen from '../screens/shop/CartScreen';
 import OrderScreen from '../screens/shop/OrderScreen';
 import UserProductScreen from '../screens/user/UserProductsScreen';;
 import EditProductScreen from '../screens/user/EditProductScreen';
+import AuthScreen from '../screens/user/AuthScreen';
+import StartupScreen from '../screens/StartupScreen';
+
+import * as authActions from '../store/actions/auth';
 import Colors from '../constants/Colors';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { useDispatch } from 'react-redux';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
+
+const ProductStack = createStackNavigator();
 const ProductsNavigator = () => {
   return (
-      <Stack.Navigator
+      <ProductStack.Navigator
           screenOptions = {{
               headerStyle : {backgroundColor: Platform.OS === 'android' ? Colors.primary : 'white'},
               headerTintColor: Platform.OS === 'android'  ? 'white' : Colors.primaryColor,
               headerTitleStyle: { fontWeight: 'bold' }
           }}
       >
-        <Stack.Screen name="ProductsOverView" component={ProductsOverViewScreen} />
-        <Stack.Screen name='ProductDetail' component={ProductDetailScreen} />
-        <Stack.Screen name='Cart' component={CartScreen} />
-      </Stack.Navigator>
+        <ProductStack.Screen name="ProductsOverView" component={ProductsOverViewScreen} />
+        <ProductStack.Screen name='ProductDetail' component={ProductDetailScreen} />
+        <ProductStack.Screen name='Cart' component={CartScreen} />
+      </ProductStack.Navigator>
   );
 };
 
+
+const OrderStack = createStackNavigator();
 const OrdersNavigator = () => {
   return (
-    <Stack.Navigator
+    <OrderStack.Navigator
       screenOptions = {{
               headerStyle : {backgroundColor: Platform.OS === 'android' ? Colors.primary : 'white'},
               headerTintColor: Platform.OS === 'android'  ? 'white' : Colors.primaryColor,
               headerTitleStyle: { fontWeight: 'bold' }
           }}
     >
-      <Stack.Screen name='Orders' component={OrderScreen} />
-    </Stack.Navigator>
+      <OrderStack.Screen name='Orders' component={OrderScreen} />
+    </OrderStack.Navigator>
   );
 };
 
+
+const AdminStack = createStackNavigator();
 const AdminNavigator = () => {
   return (
-    <Stack.Navigator
+    <AdminStack.Navigator
       screenOptions = {{
               headerStyle : {backgroundColor: Platform.OS === 'android' ? Colors.primary : 'white'},
               headerTintColor: Platform.OS === 'android'  ? 'white' : Colors.primaryColor,
               headerTitleStyle: { fontWeight: 'bold' }
           }}
     >
-      <Stack.Screen name='UserProducts' component={UserProductScreen} />
-      <Stack.Screen name='EditProducts' component={EditProductScreen} />
-    </Stack.Navigator>
+      <AdminStack.Screen name='UserProducts' component={UserProductScreen} />
+      <AdminStack.Screen name='EditProducts' component={EditProductScreen} />
+    </AdminStack.Navigator>
   );
 };
 
-const ShopsNavigator = () => {
+
+const ShopDrawer = createDrawerNavigator();
+export const ShopsNavigator = () => {
+  const dispatch = useDispatch();
   return(
-    <NavigationContainer>
-      <Drawer.Navigator
+    // <NavigationContainer>
+      <ShopDrawer.Navigator
         screenOptions={{
           drawerActiveTintColor : Colors.primary,
           drawerLabelStyle : {fontWeight: 'bold'}
         }}
+        drawerContent={props => {
+          return (
+            <View style={{ flex: 1, paddingTop: 35, paddingHorizontal:10 }}>
+              <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
+                <DrawerItemList {...props} />
+                <Button
+                  title="Logout"
+                  color={Colors.primary}
+                  onPress={() => {
+                    dispatch(authActions.logout());
+                    props.navigation.navigate('Auth');
+                  }}
+                />
+              </SafeAreaView>
+            </View>
+          );
+        }}
+  
       >
-        <Drawer.Screen 
+        <ShopDrawer.Screen 
           name = "Shops" 
           component = {ProductsNavigator} 
           options={{
@@ -84,7 +116,7 @@ const ShopsNavigator = () => {
           }}
         />
 
-        <Drawer.Screen 
+        <ShopDrawer.Screen 
           name = "Order" 
           component = {OrdersNavigator}
           options={{
@@ -99,7 +131,7 @@ const ShopsNavigator = () => {
           }}
         />
         
-        <Drawer.Screen 
+        <ShopDrawer.Screen 
           name = "Admin" 
           component = {AdminNavigator} 
           options={{
@@ -113,9 +145,38 @@ const ShopsNavigator = () => {
           }} 
         />
 
-      </Drawer.Navigator>
-    </NavigationContainer>
+      </ShopDrawer.Navigator>
+    // </NavigationContainer>
   );
 };
 
-export default ShopsNavigator;
+const AuthStack = createStackNavigator();
+
+const AuthNavigator = () => {
+  return (
+    <NavigationContainer>
+    <AuthStack.Navigator
+      screenOptions = {{
+              headerStyle : {backgroundColor: Platform.OS === 'android' ? Colors.primary : 'white'},
+              headerTintColor: Platform.OS === 'android'  ? 'white' : Colors.primaryColor,
+              headerTitleStyle: { fontWeight: 'bold' }
+          }}
+    >
+      <AuthStack.Screen name="Startup" component={StartupScreen} />
+      <AuthStack.Screen name="Auth" component={AuthScreen} />
+      <AuthStack.Screen name="Shop" component={ShopsNavigator} options = {{headerShown: false}} />
+      
+    </AuthStack.Navigator>
+    </NavigationContainer>
+  ); 
+};
+
+const MainNavigator = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Auth" component={AuthNavigator} />
+      <Stack.Screen name="Shop" component={ShopsNavigator} />
+    </Stack.Navigator>
+  );
+};
+export default AuthNavigator;

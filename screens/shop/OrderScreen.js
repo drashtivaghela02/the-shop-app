@@ -13,9 +13,11 @@ import Colors from "../../constants/Colors";
 const OrderScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
     const orderscr = useSelector(state => state.order.orders);  // order (from App.js)  orders(from reducer)
-    console.log("Orders: ",orderscr)
+    // console.log("Orders: ",orderscr)
     const dispatch = useDispatch();
     
+    
+
     // useEffect(() => {
     //     setIsLoading(true);
     //     dispatch(OrdersAction.fetchOrders()).then(() => {
@@ -23,15 +25,6 @@ const OrderScreen = props => {
     //     });
     // },[dispatch]);
 
-
-//     if(isLoading){
-//         return (
-//             <View style = {styles.centered}>
-//                 <ActivityIndicator size="large" color={Colors.primary} />
-//             </View>
-//         );
-//     }
-// if(!isLoading){
     useLayoutEffect(() => {
         props.navigation.setOptions({
             headerTitle : 'Your Orders',
@@ -44,7 +37,6 @@ const OrderScreen = props => {
             },
         });
     },[props.navigation]);
-// }
 
 
     useEffect(() => {
@@ -54,7 +46,7 @@ const OrderScreen = props => {
         });
     },[dispatch]);
 
-
+    // while loading display spinner
     if(isLoading){
         return (
             <View style = {styles.centered}>
@@ -62,6 +54,15 @@ const OrderScreen = props => {
             </View>
         );
     }
+    // if there is no orders
+    if(orderscr.length === 0){
+        return (
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <Text>No Orders found, maybe start creating some?</Text>
+            </View>
+        );
+    }
+
     return (
         <FlatList 
             data={orderscr}
